@@ -1,0 +1,3 @@
+# Verified exact hostnames only, one per line.
+# EMPTY BY DEFAULT. Do not assume any target is authorized.
+# Add a hostname only after checking the CURRENT NASA Bugcrowd in-scope list.
