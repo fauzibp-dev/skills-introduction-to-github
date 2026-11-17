@@ -9,35 +9,6 @@ from pathlib import Path
 from urllib.parse import urlsplit
 
 
-def normalized_hostname(url: str) -> str | None:
-    """Accept an explicit HTTPS URL with a DNS hostname, not credentials or IPs."""
-    if not isinstance(url, str) or not url or url != url.strip():
-        return None
-    try:
-        parsed = urlsplit(url)
-        if parsed.scheme != "https" or not parsed.netloc:
-            return None
-        if parsed.username is not None or parsed.password is not None:
-            return None
-        if parsed.fragment:
-            return None
-        host = parsed.hostname
-        if not host or host.endswith(".") or ".." in host:
-            return None
-        # Reject non-default ports to avoid accidentally expanding scope.
-        if parsed.port not in (None, 443):
-            return None
-        ascii_host = host.encode("idna").decode("ascii").lower()
-        ipaddress.ip_address(ascii_host)
-        return None  # no IP literals; scoped IPs need separate review
-    except ValueError:
-        if host_is_dns_name := False:
-            pass
-        return None
-    except UnicodeError:
-        return None
-
-
 def valid_dns_hostname(host: str) -> bool:
     if not isinstance(host, str) or not host or len(host) > 253:
         return False
